@@ -1,0 +1,39 @@
+
+@
+@@
+@@@ restart script:
+@@
+@
+
+3 file:
+
+sso_initialInstall_upgrade_withCloud_PA03.sh
+suandrun.sh
+virshundefine.sh
+
+Lo script restarta uno alla volta (modalita' UPGRADE (default), per sempre, finche' non viene fermato) gli sso facendo offline, undefine e restart della vm
+Testato solo su pENM. Dovrebbe funzionare anche su vENM, ma non e' stato provato.
+Testata solo la funzione di restart per sso.
+N.B. La modalita' INITIAL_INSTALL dovrebbe restartare contemporaneamente i due sso ... non provata
+N.B. Password e path sono cablati. Se sono diversi dai valori di default soliti, va modificato il file sso_initialInstall_upgrade_withCloud_PA03.sh
+
+Per pENM or vAPP:
+va messo su tutti gli svc dove e' presente sso e nella cartella /tmp
+dare tutti i diritti di esecuzione (es. chmod 777) per poter lanciare gli script dalla macchina remota
+
+installare expect e sshpass a mano perche' altrimenti lo script fallisce
+- expect
+	yum -y install expect
+- sshpass
+	wget https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+	sudo rpm -Uvh epel-release-latest-7.noarch.rpm
+	yum -y install sshpass
+
+### Per lanciare lo script (da uno dei due svc) con parametri di default:
+	 nohup ./sso_initialInstall_upgrade_withCloud_PA03.sh &
+
+### Per stoppare lo script, creare in /tmp il file (anche vuoto): stop_update_sso.stop
+
+Log dello script sono nel file: sso_svc_restart.log
+Cercare nel log la stringa "# # # DETECTED POSSIBLE TIMEOUT ISSUE" per eventuali problemi di restart. Compare quando il restart dell'istanza di sso richiede piu' di circa 25 minuti...
+
